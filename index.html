@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <style>
+        .card-body {
+            white-space: pre-line;
+            font-family: monospace;
+        }
+    </style>
+
+    <title>Release Maker</title>
+</head>
+
+<body>
+    <section class="container py-4 mb-3">
+        <div class="p-5 bg-light rounded-3">
+            <div class="container-fluid py-5">
+                <h1 class="display-5 fw-bold">Release Maker</h1>
+                <p class="lead">By Carbon Editor</p>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="container">
+        <div id="app">
+            <form class="mb-5">
+                <div class="mb-4">
+                    <label for="nameField" class="form-label">What is your name?</label>
+                    <input type="text" class="form-control" id="nameField" v-model="name">
+                </div>
+
+                <div class="mb-4">
+                    <div class="form-check" id="isCopyrightHolder">
+                        <input class="form-check-input" type="radio" name="radioButtons" id="isCHButton" :value="true" v-model="isCopyrightHolder">
+                        <label class="form-check-label" for="exampleRadios1">I am the copyright holder</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="radioButtons" id="isRepButton" :value="false" v-model="isCopyrightHolder">
+                        <label class="form-check-label" for="exampleRadios2">I represent the copyright holder</label>
+                    </div>
+                </div>
+
+                <div class="mb-4" v-show="!isCopyrightHolder">
+                    <label for="copyrightHolderNameField" class="form-label">Who is the copyright holder?</label>
+                    <input type="text" class="form-control" id="copyrightHolderNameField" v-model="copyrightHolderName">
+                    <div class="form-text">i.e. name of the person/orgnaization you represent</div>
+                </div>
+
+                <div class="mb-4" v-show="!isCopyrightHolder">
+                    <label for="relationshipField" class="form-label">What is your relationship to the copyright holder?</label>
+                    <input type="text" class="form-control" id="relationshipField" v-model="relationship">
+                    <div class="form-text">e.g. Director, Appointed Represenatitve, Legal Counsel</div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="licensePicker" class="form-label">What license should the image(s) be published under?</label>
+                    <select class="form-select" id="licensePicker" v-model="selectedLic">
+                        <option v-for="s in ['CC BY-SA', 'CC BY', 'CC0']" :key="s" :value="s">{{lics[s].display}}</option>
+                    </select>
+                    <div class="form-text">Click <a target="_blank" :href="lics[selectedLic].url">here</a> to view deed</div>
+                </div>
+
+                <input type="submit" class="btn btn-primary" v-on:click.prevent="genText" :disabled="!name || !isCopyrightHolder && (!copyrightHolderName || !relationship)"></button>
+            </form>
+
+            <div class="card" v-show="text">
+                <div class="card-header text-end"><button class="btn btn-outline-primary" v-on:click="copyText">Copy</button></div>
+                <div class="card-body p-4">
+                    {{text}}
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.26/vue.global.prod.min.js" integrity="sha512-yY2w8QVShzoLAachKPHtZRjXZeQOi9rQ2dYEYLf+lelt+TvZVOm/AlqVX6xFrjiy6wKDxgqvT1RL3BjxPdq/UA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    name: "",
+                    isCopyrightHolder: true,
+                    copyrightHolderName: "",
+                    relationship: "",
+                    selectedLic: "CC BY-SA",
+                    lics: {
+                        "CC BY-SA": {
+                            url: "https://creativecommons.org/licenses/by-sa/4.0/",
+                            display: "Attribution-ShareAlike (Recommended)",
+                            name: "Creative Commons Attribution-ShareAlike 4.0 International Public License (CC-BY-SA-4.0)"
+                        },
+                        "CC BY": {
+                            url: "https://creativecommons.org/licenses/by/4.0/",
+                            display: "Attribution",
+                            name: "Creative Commons Attribution 4.0 International Public License (CC-BY-4.0)"
+                        },
+                        "CC0": {
+                            url: "https://creativecommons.org/share-your-work/public-domain/cc0/",
+                            display: "Public Domain Dedication",
+                            name: "Public Domain Dedication (CC0)"
+                        }
+                    },
+                    text: ""
+                };
+            },
+            methods: {
+                genText() {
+                    let authority = this.isCopyrightHolder ? `, ${this.name}, am` : ` represent ${this.copyrightHolderName},`;
+
+                    this.text = `I hereby affirm that I${authority} the creator and/or sole owner of the exclusive copyright of the attached images, and have legal authority in my capacity to release the copyright of that work.
+I agree to publish the above-mentioned content under the free license: ${this.lics[this.selectedLic].name}
+I acknowledge that by doing so I grant anyone the right to use the work in a commercial product or otherwise, and to modify it according to their needs, provided that they abide by the terms of the license and any other applicable laws.
+I am aware that this agreement is not limited to Wikipedia or related sites.
+I am aware that I always retain copyright of my work, and retain the right to be attributed in accordance with the license chosen. Modifications others make to the work will not be claimed to have been made by me.
+I acknowledge that I cannot withdraw this agreement, and that the content may or may not be kept permanently on a Wikimedia project.
+
+${this.name}${this.isCopyrightHolder ? "" : "\n" + this.relationship}
+${new Date().toLocaleDateString()}`;
+                },
+                copyText() {
+                    navigator.clipboard.writeText(this.text).then(() => console.log('copied text to clipboard'), e => console.error(e));
+                }
+            }
+        }).mount("#app");
+    </script>
+
+</body>
+
+</html>
