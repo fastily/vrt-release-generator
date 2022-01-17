@@ -20,7 +20,7 @@
 
 <body>
     <section class="container py-4 mb-3">
-        <div class="p-5 bg-light rounded-3">
+        <div class="p-3 bg-light rounded-3">
             <div class="container-fluid py-5">
                 <h1 class="display-5 fw-bold">Release Maker</h1>
                 <p class="lead">By Carbon Editor</p>
@@ -29,7 +29,7 @@
     </section>
 
 
-    <section class="container">
+    <section class="container mb-5">
         <div id="app">
             <form class="mb-5">
                 <div class="mb-4">
@@ -116,7 +116,9 @@
                 genText() {
                     let authority = this.isCopyrightHolder ? `, ${this.name}, am` : ` represent ${this.copyrightHolderName},`;
 
-                    this.text = `I hereby affirm that I${authority} the creator and/or sole owner of the exclusive copyright of the attached images, and have legal authority in my capacity to release the copyright of that work.
+                    this.text = `Hello Wikimedia VRT,
+
+I hereby affirm that I${authority} the creator and/or sole owner of the exclusive copyright of the attached images, and have legal authority in my capacity to release the copyright of that work.
 I agree to publish the above-mentioned content under the free license: ${this.lics[this.selectedLic].name}
 I acknowledge that by doing so I grant anyone the right to use the work in a commercial product or otherwise, and to modify it according to their needs, provided that they abide by the terms of the license and any other applicable laws.
 I am aware that this agreement is not limited to Wikipedia or related sites.
